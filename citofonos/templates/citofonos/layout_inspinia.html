@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CAAE UnACh</title>
+    {% load staticfiles %}
+
+
+    <link href="{% static 'citofonos/content/bootstrap.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'citofonos/font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'citofonos/content/awesome-bootstrap-checkbox.css' %}" rel="stylesheet">
+
+    <link href="{% static 'citofonos/iCheck/custom.css' %}" rel="stylesheet">
+
+    <!-- Toastr style -->
+
+    <link href="{% static 'citofonos/content/toastr.min.css' %}" rel="stylesheet">
+
+    <!-- Gritter -->
+
+    <link href="{% static 'citofonos/content/jquery.gritter.css' %}" rel="stylesheet">
+
+    <link href="{% static 'citofonos/steps/jquery.steps.css' %}" rel="stylesheet">
+
+
+    <link href="{% static 'citofonos/content/animate.css' %}" rel="stylesheet">
+
+
+    <link href="{% static 'citofonos/content/style.css' %}" rel="stylesheet">
+
+
+
+    <link href="{% static 'citofonos/content/plugins/datapicker/datepicker3.css' %}"  rel="stylesheet">
+    <link href="{% static 'citofonos/content/plugins/clockpicker/clockpicker.css' %}" rel="stylesheet">
+    <link href="{% static 'citofonos/content/plugins/colorpicker/bootstrap-colorpicker.min.css' %}" rel="stylesheet">
+    <link href="{% static 'citofonos/content/plugins/colorpicker/m.css' %}" rel="stylesheet">
+
+
+
+
+    <link  href="{% static 'citofonos/content/plugins/fullcalendar/fullcalendar.min.css' %}"  rel="stylesheet">
+
+
+
+
+
+
+
+
+
+</head>
+
+<body class="pace-done skin-1">
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li class="nav-header" style="height: 125px;">
+                        <div class="dropdown profile-element">
+
+                            <span style="float: right;">
+
+                            <img alt="image" class="img-circle" src="{% static 'citofonos' %}{{ request.user.username }}"  width="55" height="65"/>
+
+                             </span>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+
+                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{ request.user.username }}</strong>
+                             </span> <span class="text-muted text-xs block">{% if  user.is_staff %}  Administrador  {% else %} Usuario {% endif %}<b class="caret"></b></span> </span> </a>
+
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><a href="/perfil_usuario/{{ request.user.username  }}">Colores del profesional</a></li>
+                                <!--li><a href="contacts.html">Contacto</a></li>
+                                <li><a href="mailbox.html">Correo</a></li-->
+                                <li class="divider"></li>
+                                <li><a  href="/logout.html">Salir</a></li>
+                            </ul>
+                        </div>
+                        <div class="logo-element">
+                            CAAE
+                        </div>
+                    </li>
+
+
+                     <li>
+                        <a href="/derivar/"><i class="fa fa-table"></i> <span class="nav-label" style=" margin-left: 8px;"><small>Derivar</small></span>  <span class="label label-primary pull-right">{{ request.session.tr_canasta_num }}</span> </a>
+                    </li>
+
+                      {% if  adm_citofonos  %}
+
+                     <li>
+                        <a href="/citofonosderivacion/"><i class="fa fa-table"></i> <span class="nav-label" style=" margin-left: 8px;"><small>citofonosar derivaciones</small></span>  <span class="label label-primary pull-right">{{ request.session.tr_canasta_num }}</span> </a>
+                    </li>
+                       {% endif %}
+
+
+
+                {% if adm_alertas or adm_permisos%}
+                    <li>
+                        <a href="index.html"><i class="fa fa-edit"></i> <span class="nav-label" style=" margin-left: 8px;"><small>Administrar</small></span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+
+                            {% if adm_alertas %}
+                            <li ><a href="/revision/0/0/0/"><small>Alertas y reportes </small></a></li>
+                            {% endif %}
+
+                            {% if adm_permisos %}
+                            <li ><a href="/admin_permisos/"><small> citofonos permisos </small></a></li>
+                            {% endif %}
+
+
+                        </ul>
+                    </li>
+                {% endif %}
+
+
+                    {% if adm_seguimiento %}
+                     <li>
+                        <a href="#"><i class="fa fa-table"></i> <span class="nav-label" style=" margin-left: 8px;"><small>Seguimiento</small></span>  <span class="fa arrow"></span>   </a>
+                        
+
+
+
+                     </li>
+
+
+
+
+                         <li>
+                          <a href="/cal_general/"><i class="fa fa-table"></i> <span class="nav-label" style=" margin-left: 8px;"><small>Calendario general</small></span>  <span class="label label-primary pull-right">{{ request.session.tr_canasta_num }}</span> </a>
+
+
+
+
+
+                         </li>
+
+
+
+
+
+
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg dashbard-1" style="min-height: 1087px; max-height: 5000px">
+        <div class="row border-bottom">
+
+
+
+         <!--MENU COMPLETO TOP-->
+
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+
+
+
+             <!--MENU  TOP DERECHO MINIMIZAR MENU -->
+            <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" method="post" action="search_results.html">
+                <!--div class="form-group">
+                    <input type="text" placeholder="Buscar algo..." class="form-control" name="top-search" id="top-search">
+                </div-->
+            </form>
+        </div>
+
+
+            <!--MENU LOGIN TOP IZQUIERDO -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <span class="m-r-sm text-muted welcome-message">Usuario ingresado <span class="text-navy">{{ request.session.nombres }}  {{ request.session.apellidos }}</span>  <span class="text-navy"><strong> </strong> </span> </span>
+                </li>
+
+                <!--
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope"></i>  <span class="label label-warning">16</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="profile.html" class="pull-left">
+                                    <img alt="image" class="img-circle" src="{% static 'citofonos/img/a7.jpg' %}" >
+                                </a>
+                                <div class="media-body">
+                                    <small class="pull-right">46h ago</small>
+                                    <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br>
+                                    <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="profile.html" class="pull-left">
+                                    <img alt="image" class="img-circle" src="{% static 'citofonos/img/a4.jpg' %}" >
+                                </a>
+                                <div class="media-body ">
+                                    <small class="pull-right text-navy">5h ago</small>
+                                    <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica Smith</strong>. <br>
+                                    <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="profile.html" class="pull-left">
+                                    <img alt="image" class="img-circle"  src="{% static 'citofonos/img/profile.jpg' %}" >
+                                </a>
+                                <div class="media-body ">
+                                    <small class="pull-right">23h ago</small>
+                                    <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
+                                    <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="mailbox.html">
+                                    <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="mailbox.html">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="profile.html">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="grid_options.html">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="notifications.html">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+
+                 -->
+
+                <li>
+                    <a href="/logout.html">
+                        <i class="fa fa-sign-out"></i> Salir
+                    </a>
+                </li>
+            </ul>
+
+             <!-- FIN MENU TOP COMPLETO -->
+
+
+        </nav>
+
+        </div>
+
+
+
+
+
+        <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row  border-bottom white-bg dashboard-header">
+
+                    <!--div class="col-sm-6">
+                        <h2>Sistema gestión CAE-Ingresa</h2>
+                        <small>Universidad Advetista de Chile.</small>
+                        <ul class="list-group clear-list m-t">
+                            <li class="list-group-item fist-item">
+                                <span class="pull-right">
+                                    09:00 pm
+                                </span>
+                                <span class="label label-success">1</span> Please contact me
+                            </li>
+                            <li class="list-group-item">
+                                <span class="pull-right">
+                                    10:16 am
+                                </span>
+                                <span class="label label-info">2</span> Sign a contract
+                            </li>
+                            <li class="list-group-item">
+                                <span class="pull-right">
+                                    08:22 pm
+                                </span>
+                                <span class="label label-primary">3</span> Open new shop
+                            </li>
+                            <li class="list-group-item">
+                                <span class="pull-right">
+                                    11:06 pm
+                                </span>
+                                <span class="label label-default">4</span> Call back to Sylvia
+                            </li>
+                            <li class="list-group-item">
+                                <span class="pull-right">
+                                    12:00 am
+                                </span>
+                                <span class="label label-primary">5</span> Write a letter to Sandra
+                            </li>
+                        </ul>
+                    </div-->
+
+
+
+
+                    <!--div class="col-sm-6">
+                        <div class="flot-chart dashboard-chart">
+                            <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                        </div>
+                        <div class="row text-left">
+                            <div class="col-xs-4">
+                                <div class=" m-l-md">
+                                <span class="h4 font-bold m-t block">$ 406,100</span>
+                                <small class="text-muted m-b block">Sales marketing report</small>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <span class="h4 font-bold m-t block">$ 150,401</span>
+                                <small class="text-muted m-b block">Annual sales revenue</small>
+                            </div>
+                            <div class="col-xs-4">
+                                <span class="h4 font-bold m-t block">$ 16,822</span>
+                                <small class="text-muted m-b block">Half-year revenue margin</small>
+                            </div>
+
+                        </div>
+                    </div-->
+
+
+
+                    <!--div class="col-sm-3">
+                        <div class="statistic-box">
+                        <h4>
+                            Project Beta progress
+                        </h4>
+                        <p>
+                            You have two project with not compleated task.
+                        </p>
+                            <div class="row text-center">
+                                <div class="col-lg-6">
+                                    <canvas id="polarChart" width="80" height="80"></canvas>
+                                    <h5 >Kolter</h5>
+                                </div>
+                                <div class="col-lg-6">
+                                    <canvas id="doughnutChart" width="78" height="78"></canvas>
+                                    <h5 >Maxtor</h5>
+                                </div>
+                            </div>
+                            <div class="m-t">
+                                <small>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>
+                            </div>
+
+                        </div>
+                    </div-->
+
+
+
+                 {% block content %}{% endblock %}
+                 {% block titulo_pagina %}{% endblock %}
+                 {% block titulo_contenido %}{% endblock %}
+
+                 {% block contenido %}{% endblock %}
+
+
+                <!-- PROBANDO CAMBIO DE SKINS, AL FINAL SE HACE EN BODY CLASS-->
+                <!--div class="theme-config">
+                    <div class="theme-config-box show">
+
+                        <div class="skin-setttings">
+                            <div class="setings-item ultra-skin">
+                                <span class="skin-name"></span>
+                                <a href="#" class="s-skin-3">
+                                    Amarillo / purpura
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                </div-->
+
+
+            </div>
+</div>
+
+
+        <div class="footer">
+            <div class="pull-right"></div>
+            <div>
+               <strong>2016 Departamento de sistemas</strong>
+                <small>  Universidad Adventista de Chile </small>
+            </div>
+
+        </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script  src="{% static 'citofonos/scripts/jquery-2.1.1.js' %}" ></script>
+    <script  src="{% static 'citofonos/scripts/bootstrap.min.js' %}"></script>
+    <script  src="{% static 'citofonos/scripts/jquery.metisMenu.js' %}"></script>
+    <script  src="{% static 'citofonos/scripts/jquery.slimscroll.min.js' %}"></script>
+
+
+
+    <!-- HECHAS POR MARLON PARA CAAE -->
+
+    <script src="{% static 'citofonos/scripts/eco.js' %}"></script>
+    <script src="{% static 'citofonos/scripts/phaser.js' %}"></script>
+
+
+    <!--CALENDARIO JQUERY -->
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            aa = 0;
+
+            // COMIENZO CODIGOS DE DATATABLES, PEGADO AQUI POR MARLON
+            $('.dataTables-example').DataTable({
+
+                dom: '<"html5buttons"B>lTfgitp',
+                "language": {
+                    "sProcessing":    "Procesando...",
+                    "sLengthMenu":    "Mostrar _MENU_ ",
+                    "sZeroRecords":   "No se encontraron resultados",
+                    "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                    "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix":   "",
+                    "sSearch":        "Buscar:   ",
+                    "sUrl":           "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst":    "Primero",
+                        "sLast":    "Último",
+                        "sNext":    "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                buttons: [
+                    { extend: 'copy'},
+                    {extend: 'csv'},
+                    {extend: 'excel', title: 'ExampleFile'},
+                    {extend: 'pdf', title: 'ExampleFile'},
+
+                    {extend: 'print',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                       }
+                    }
+                ]
+
+            });
+
+
+            /* Init DataTables */
+            var oTable = $('#editable').DataTable();
+
+            /* Apply the jEditable handlers to the table */
+            oTable.$('td').editable( '../example_ajax.php', {
+                "callback": function( sValue, y ) {
+                    var aPos = oTable.fnGetPosition( this );
+                    oTable.fnUpdate( sValue, aPos[0], aPos[1] );
+                },
+                "submitdata": function ( value, settings ) {
+                    return {
+                        "row_id": this.parentNode.getAttribute('id'),
+                        "column": oTable.fnGetPosition( this )[2]
+                    };
+                },
+
+                "width": "90%",
+                "height": "100%"
+            } );
+
+
+            function fnClickAddRow() {
+            $('#editable').dataTable().fnAddData( [
+                "Custom row",
+                "New row",
+                "New row",
+                "New row",
+                "New row" ] );
+
+        }
+
+         // FIN CODIGO DE DATATABLES
+
+
+
+
+
+
+            setTimeout(function() {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 4000
+                };
+                //toastr.success('Administrador CAE responsivo', 'Bienvenido a CAE-Ingresa UnACh');
+
+            }, 1300);
+
+
+            var data1 = [
+                [0,4],[1,8],[2,5],[3,10],[4,4],[5,16],[6,5],[7,11],[8,6],[9,11],[10,30],[11,10],[12,13],[13,4],[14,3],[15,3],[16,6]
+            ];
+            var data2 = [
+                [0,1],[1,0],[2,2],[3,0],[4,1],[5,3],[6,1],[7,5],[8,2],[9,3],[10,2],[11,1],[12,0],[13,2],[14,8],[15,0],[16,0]
+            ];
+            $("#flot-dashboard-chart").length && $.plot($("#flot-dashboard-chart"), [
+                data1, data2
+            ],
+                    {
+                        series: {
+                            lines: {
+                                show: false,
+                                fill: true
+                            },
+                            splines: {
+                                show: true,
+                                tension: 0.4,
+                                lineWidth: 1,
+                                fill: 0.4
+                            },
+                            points: {
+                                radius: 0,
+                                show: true
+                            },
+                            shadowSize: 2
+                        },
+                        grid: {
+                            hoverable: true,
+                            clickable: true,
+                            tickColor: "#d5d5d5",
+                            borderWidth: 1,
+                            color: '#d5d5d5'
+                        },
+                        colors: ["#1ab394", "#464f88"],
+                        xaxis:{
+                        },
+                        yaxis: {
+                            ticks: 4
+                        },
+                        tooltip: false
+                    }
+            );
+
+            var doughnutData = [
+                {
+                    value: 300,
+                    color: "#a3e1d4",
+                    highlight: "#1ab394",
+                    label: "App"
+                },
+                {
+                    value: 50,
+                    color: "#dedede",
+                    highlight: "#1ab394",
+                    label: "Software"
+                },
+                {
+                    value: 100,
+                    color: "#b5b8cf",
+                    highlight: "#1ab394",
+                    label: "Laptop"
+                }
+            ];
+
+            var doughnutOptions = {
+                segmentShowStroke: true,
+                segmentStrokeColor: "#fff",
+                segmentStrokeWidth: 2,
+                percentageInnerCutout: 45, // This is 0 for Pie charts
+                animationSteps: 100,
+                animationEasing: "easeOutBounce",
+                animateRotate: true,
+                animateScale: false,
+            };
+
+            var ctx = document.getElementById("doughnutChart").getContext("2d");
+            var DoughnutChart = new Chart(ctx).Doughnut(doughnutData, doughnutOptions);
+
+            var polarData = [
+                {
+                    value: 300,
+                    color: "#a3e1d4",
+                    highlight: "#1ab394",
+                    label: "App"
+                },
+                {
+                    value: 140,
+                    color: "#dedede",
+                    highlight: "#1ab394",
+                    label: "Software"
+                },
+                {
+                    value: 200,
+                    color: "#b5b8cf",
+                    highlight: "#1ab394",
+                    label: "Laptop"
+                }
+            ];
+
+            var polarOptions = {
+                scaleShowLabelBackdrop: true,
+                scaleBackdropColor: "rgba(255,255,255,0.75)",
+                scaleBeginAtZero: true,
+                scaleBackdropPaddingY: 1,
+                scaleBackdropPaddingX: 1,
+                scaleShowLine: true,
+                segmentShowStroke: true,
+                segmentStrokeColor: "#fff",
+                segmentStrokeWidth: 2,
+                animationSteps: 100,
+                animationEasing: "easeOutBounce",
+                animateRotate: true,
+                animateScale: false,
+            };
+            var ctx = document.getElementById("polarChart").getContext("2d");
+            var Polarchart = new Chart(ctx).PolarArea(polarData, polarOptions);
+
+
+
+
+
+
+
+
+
+
+
+
+        });
+    </script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-4625583-2', 'webapplayers.com');
+        ga('send', 'pageview');
+
+    </script>
+
+
+<!-- ESTA ES LA SECCION DE JAVASCRIPT PARA DATATABLE, COPIADO POR MARLON --!
+
+ <!-- Mainly scripts -->
+
+
+
+
+
+</body>
+</html>

@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+#from citofonos.views import prueba
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^prueba/', 'citofonos.views.prueba', name='prueba'  )
 ]
